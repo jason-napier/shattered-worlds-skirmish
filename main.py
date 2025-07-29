@@ -17,16 +17,20 @@ class VillageGameApp(App):
     def build(self):
         # Mobile-specific configurations
         if platform == 'android':
-            # Hide status bar on Android
-            from android.runnable import run_on_ui_thread
-            from jnius import autoclass
-            
-            @run_on_ui_thread
-            def hide_status_bar():
-                activity = autoclass('org.kivy.android.PythonActivity').mActivity
-                activity.getWindow().setFlags(1024, 1024)  # FLAG_FULLSCREEN
-            
-            hide_status_bar()
+            try:
+                # Hide status bar on Android
+                from android.runnable import run_on_ui_thread
+                from jnius import autoclass
+                
+                @run_on_ui_thread
+                def hide_status_bar():
+                    activity = autoclass('org.kivy.android.PythonActivity').mActivity
+                    activity.getWindow().setFlags(1024, 1024)  # FLAG_FULLSCREEN
+                
+                hide_status_bar()
+            except ImportError:
+                # These modules are only available on Android runtime, not during build
+                pass
         
         # Set window properties for mobile
         if platform in ['android', 'ios']:
