@@ -49,6 +49,9 @@ jobs:
         if [ ! -f buildozer.spec ]; then
           buildozer init
         fi
+        echo ""
+        echo "Validating buildozer configuration..."
+        buildozer android check
         
     - name: Show current directory contents
       run: |
@@ -81,8 +84,12 @@ jobs:
         buildozer android debug 2>&1 | tee build.log
         echo ""
         echo "Build completed. Exit code: $?"
-        echo "Last 50 lines of build log:"
-        tail -50 build.log
+        echo "Last 100 lines of build log:"
+        tail -100 build.log
+        echo ""
+        echo "Full build log size: $(wc -l < build.log) lines"
+        echo "Searching for error patterns in build log..."
+        grep -i "error\|fail\|exception" build.log | tail -20
       continue-on-error: true
         
     - name: Check if APK was created
