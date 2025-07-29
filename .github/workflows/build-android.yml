@@ -33,9 +33,10 @@ jobs:
       run: |
         echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> $GITHUB_ENV
         
-    - name: Install buildozer
+    - name: Install buildozer and dependencies
       run: |
         pip install buildozer==1.5.0
+        pip install cython==0.29.33
         
     - name: Show buildozer version
       run: |
