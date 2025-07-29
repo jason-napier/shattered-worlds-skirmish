@@ -26,6 +26,8 @@ jobs:
         sudo apt-get install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
         sudo apt-get install -y libgstreamer1.0-dev gstreamer1.0-plugins-{bad,base,good,ugly} gstreamer1.0-{tools,x} libgirepository1.0-dev libcairo2-dev pkg-config python3-dev
         sudo apt-get install -y openjdk-8-jdk
+        sudo apt-get install -y libssl-dev libffi-dev python3-setuptools python3-wheel
+        sudo apt-get install -y cmake
         
     - name: Set JAVA_HOME
       run: |
@@ -33,7 +35,7 @@ jobs:
         
     - name: Install buildozer
       run: |
-        pip install buildozer
+        pip install buildozer==1.5.0
         
     - name: Show buildozer version
       run: |
@@ -51,17 +53,26 @@ jobs:
         
     - name: Build APK
       run: |
-        buildozer android debug
+        buildozer android debug 2>&1 | tee build.log
       continue-on-error: true
         
     - name: Check if APK was created
       run: |
+        echo "Current directory contents:"
+        ls -la
+        echo ""
         if [ -d bin ]; then
           echo "APK files found:"
           ls -la bin/
         else
           echo "No bin directory found"
-          ls -la
+        fi
+        echo ""
+        if [ -d .buildozer ]; then
+          echo "Buildozer directory contents:"
+          find .buildozer -type f -name "*.log" | head -10
+        else
+          echo "No .buildozer directory found"
         fi
         
     - name: Upload APK artifact
@@ -77,8 +88,8 @@ jobs:
       with:
         name: build-logs
         path: |
-          .buildozer/logs/
-          .buildozer/android/platform/
+          build.log
+          .buildozer/
         retention-days: 7
         
     - name: Create Release
