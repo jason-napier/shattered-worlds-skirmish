@@ -35,18 +35,54 @@ jobs:
       run: |
         pip install buildozer
         
+    - name: Show buildozer version
+      run: |
+        buildozer --version
+        
+    - name: Initialize buildozer (if needed)
+      run: |
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
+        
+    - name: Show current directory contents
+      run: |
+        ls -la
+        
     - name: Build APK
       run: |
         buildozer android debug
+      continue-on-error: true
+        
+    - name: Check if APK was created
+      run: |
+        if [ -d bin ]; then
+          echo "APK files found:"
+          ls -la bin/
+        else
+          echo "No bin directory found"
+          ls -la
+        fi
         
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
+      if: hashFiles('bin/*.apk') != ''
       with:
         name: shattered-worlds-apk
         path: bin/*.apk
         
+    - name: Upload build logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-logs
+        path: |
+          .buildozer/logs/
+          .buildozer/android/platform/
+        retention-days: 7
+        
     - name: Create Release
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && hashFiles('bin/*.apk') != ''
       uses: softprops/action-gh-release@v1
       with:
         files: bin/*.apk

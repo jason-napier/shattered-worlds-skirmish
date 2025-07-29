@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,pillow
+requirements = python3,kivy==2.2.1,pillow==10.0.0
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -88,16 +88,16 @@ fullscreen = 0
 android.permissions = INTERNET
 
 # (int) Target Android API, should be as high as possible.
-android.api = 28
+android.api = 33
 
 # (int) Minimum API your APK will support.
 android.minapi = 21
 
 # (int) Android SDK version to use
-android.sdk = 20
+android.sdk = 33
 
 # (str) Android NDK version to use
-android.ndk = 19b
+android.ndk = 25b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
