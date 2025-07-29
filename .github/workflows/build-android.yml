@@ -86,16 +86,22 @@ jobs:
         echo "Buildozer spec file contents:"
         cat buildozer.spec | head -20
         echo ""
-        echo "Starting build..."
-        buildozer android debug 2>&1 | tee build.log
+        echo "Starting build with verbose output..."
+        set -x
+        buildozer android debug
+        BUILD_EXIT_CODE=$?
+        set +x
         echo ""
-        echo "Build completed. Exit code: $?"
-        echo "Last 100 lines of build log:"
-        tail -100 build.log
+        echo "Build completed. Exit code: $BUILD_EXIT_CODE"
         echo ""
-        echo "Full build log size: $(wc -l < build.log) lines"
-        echo "Searching for error patterns in build log..."
-        grep -i "error\|fail\|exception" build.log | tail -20
+        echo "Checking for buildozer logs..."
+        if [ -d .buildozer ]; then
+          echo "Buildozer logs found:"
+          find .buildozer -name "*.log" -type f | head -10
+          echo ""
+          echo "Last 50 lines of main buildozer log:"
+          find .buildozer -name "*.log" -type f | head -1 | xargs tail -50 2>/dev/null || echo "No log files found"
+        fi
       continue-on-error: true
         
     - name: Check if APK was created
