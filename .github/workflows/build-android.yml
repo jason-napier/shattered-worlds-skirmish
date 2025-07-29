@@ -48,31 +48,31 @@ jobs:
           buildozer init
         fi
         
-                - name: Show current directory contents
-              run: |
-                ls -la
-                echo ""
-                echo "Checking Python imports..."
-                python3 -c "import kivy; print('Kivy version:', kivy.__version__)"
-                python3 -c "import PIL; print('Pillow version:', PIL.__version__)"
-                python3 -c "import cython; print('Cython version:', cython.__version__)"
-                echo ""
-                echo "Testing main.py import..."
-                python3 -c "import main; print('Main.py imports successfully')"
+    - name: Show current directory contents
+      run: |
+        ls -la
+        echo ""
+        echo "Checking Python imports..."
+        python3 -c "import kivy; print('Kivy version:', kivy.__version__)"
+        python3 -c "import PIL; print('Pillow version:', PIL.__version__)"
+        python3 -c "import cython; print('Cython version:', cython.__version__)"
+        echo ""
+        echo "Testing main.py import..."
+        python3 -c "import main; print('Main.py imports successfully')"
         
-                - name: Build APK
-              run: |
-                echo "Starting buildozer build..."
-                echo "Current directory: $(pwd)"
-                echo "Directory contents:"
-                ls -la
-                echo ""
-                echo "Buildozer spec file contents:"
-                cat buildozer.spec | head -20
-                echo ""
-                echo "Starting build..."
-                buildozer android debug 2>&1 | tee build.log
-              continue-on-error: true
+    - name: Build APK
+      run: |
+        echo "Starting buildozer build..."
+        echo "Current directory: $(pwd)"
+        echo "Directory contents:"
+        ls -la
+        echo ""
+        echo "Buildozer spec file contents:"
+        cat buildozer.spec | head -20
+        echo ""
+        echo "Starting build..."
+        buildozer android debug 2>&1 | tee build.log
+      continue-on-error: true
         
     - name: Check if APK was created
       run: |
