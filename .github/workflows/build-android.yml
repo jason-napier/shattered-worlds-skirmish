@@ -51,6 +51,13 @@ jobs:
         fi
         echo ""
         echo "Buildozer configuration file exists and is ready."
+        echo ""
+        echo "Checking buildozer configuration..."
+        echo "Requirements:"
+        grep "^requirements" buildozer.spec
+        echo ""
+        echo "Android API settings:"
+        grep "^android.api\|^android.minapi\|^android.ndk" buildozer.spec
         
     - name: Show current directory contents
       run: |
@@ -106,6 +113,9 @@ jobs:
         if [ -d .buildozer ]; then
           echo "Buildozer directory contents:"
           find .buildozer -type f -name "*.log" | head -10
+          echo ""
+          echo "Checking for error logs in .buildozer directory..."
+          find .buildozer -name "*.log" -exec grep -l -i "error\|fail\|exception" {} \; | head -5
         else
           echo "No .buildozer directory found"
         fi
